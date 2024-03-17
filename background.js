@@ -18,49 +18,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
               textArea.value = `{"h": 158, "s": 470, "v": ${
                 Math.round(dataArray) * 10
               }}`;
-              // Stwórz obserwator mutacji dla elementu textarea
-              var observer = new MutationObserver(function (mutations) {
-                mutations.forEach(function (mutation) {
-                  // Ponownie ustaw wartość textarea po zmianie
-                  textArea.value = `{"h": 158, "s": 470, "v": ${
-                    Math.round(dataArray) * 10
-                  }}`;
-                });
-              });
-
-              // Rozpocznij obserwację mutacji dla elementu textarea
-              observer.observe(textArea, {
-                attributes: true,
-                childList: true,
-                subtree: true,
-              });
             } else {
               console.log(
                 "Nie znaleziono elementu textarea o identyfikatorze 'colour_data'"
               );
-              // Znajdź element textarea
-              var textArea = document.getElementById("colour_data");
-
-              // Dodaj nasłuchiwanie na zdarzenie input
-              textArea.addEventListener("input", function (event) {
-                // Loguj zmiany w konsoli
-                console.log(
-                  "Zawartość textarea została zmieniona:",
-                  event.target.value
-                );
-              });
-
-              // Dodaj nasłuchiwanie na zdarzenie change
-              textArea.addEventListener("change", function (event) {
-                // Loguj zmiany w konsoli
-                console.log(
-                  "Zawartość textarea została zmieniona:",
-                  event.target.value
-                );
-              });
             }
           },
-
           args: [dataArray],
         });
       } else {
