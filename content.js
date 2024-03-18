@@ -1,14 +1,6 @@
 if (document.location.href.includes("youtube.com")) {
   console.log("Dodawanie nasłuchiwacza na zmiany w pamięci sesji");
 
-  chrome.storage.session.onChanged.addListener(function (changes, areaName) {
-    console.log("czujka");
-    if (changes.hasOwnProperty("intervalId")) {
-      var intervalId = changes.intervalId.newValue;
-      console.log("Nowy intervalId:", intervalId);
-    }
-  });
-
   // Funkcja obliczająca średnią częstotliwość tonów
   function calculateAverageFrequency(analyser, bufferLength, dataArray) {
     // Pobierz dane o częstotliwościach
@@ -20,40 +12,44 @@ if (document.location.href.includes("youtube.com")) {
       sum += dataArray[i];
     }
 
-    // Oblicz średnią częstotliwość
-    var averageFrequency = sum / bufferLength;
+    // Dodaj sumę do tablicy
+    sumArray.push(sum);
 
-    // Wydrukuj średnią częstotliwość do konsoli
-    console.log("Średnia częstotliwość tonów:", averageFrequency);
-
-    // Zapisz tablicę dataArray do sesji pamięci
-    chrome.storage.session.set({ dataArray: averageFrequency }, function () {
-      console.log("Tablica dataArray została zapisana do pamięci sesji.");
-
-      // Pobierz dane z sesji pamięci
-      chrome.storage.session.get("dataArray", function (data) {
-        var dataArrayFromStorage = data.dataArray;
-        // Tutaj możesz korzystać z dataArrayFromStorage
-        chrome.runtime.sendMessage({
-          action: "transferData",
-          dataArray: dataArrayFromStorage,
-        });
-      });
-    });
-
-    chrome.runtime.sendMessage(
-      {
+    // Jeśli tablica osiągnęła 10 elementów, oblicz średnią i wyślij na kartę Tuya
+    if (sumArray.length === 20) {
+      // Oblicz średnią
+      var average = Math.round(
+        sumArray.reduce((acc, currentValue) => acc + currentValue, 0) /
+          sumArray.length /
+          80
+      );
+      if (average > 1000) {
+        average = 1000;
+      }
+      // Wyślij średnią na kartę Tuya
+      chrome.runtime.sendMessage({
         action: "transferData",
-        dataArray: averageFrequency,
-      },
-      console.log("dane zostaly wysłąne na karte 2")
-    );
+        dataArray: average,
+      });
+
+      // Wyczyść tablicę
+      sumArray = [];
+
+      // Wydrukuj komunikat
+      console.log(
+        "Osiągnięto liczbę 10. Średnia częstotliwość tonów:",
+        average
+      );
+    }
 
     // Wywołaj funkcję ponownie przy użyciu requestAnimationFrame()
     requestAnimationFrame(() => {
       calculateAverageFrequency(analyser, bufferLength, dataArray);
     });
   }
+
+  // Inicjalizacja tablicy do przechowywania sum częstotliwości
+  var sumArray = [];
 
   // Sprawdź, czy AudioContext jest dostępny
   if (typeof AudioContext !== "undefined") {

@@ -8,27 +8,27 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         chrome.scripting.executeScript({
           target: { tabId: targetTab.id },
           func: function (dataArray) {
+            // Znajdź element textarea o identyfikatorze "colour_data"
+            var textArea = document.getElementById("colour_data");
             // Sprawdź, czy element został znaleziony
-            var textarea = document.getElementById("colour_data");
-            if (textarea) {
+            if (textArea) {
+              console.log(dataArray);
               // // Eksperyment
               // Pobierz element textarea
+              var textarea = document.getElementById("colour_data");
 
               // Ustaw nową wartość dla textarea
-              textarea.value = `{"h": 158, "s": 470, "v": ${
-                Math.round(dataArray) * 10
-              }}`;
+              textarea.value = `{"h": 158, "s": 470, "v": ${dataArray}}`;
+              let button =
+                document.getElementsByClassName("ant-btn-primary")[0];
+              function klikacz() {
+                button.click();
+              }
+              klikacz();
 
               // Symuluj zdarzenie zmiany wartości pola tekstowego
               var event = new Event("input", { bubbles: true });
               textarea.dispatchEvent(event);
-              const button = document.querySelector(".ant-btn.ant-btn-primary");
-
-              // Sprawdź, czy przycisk został znaleziony
-              if (button) {
-                // Kliknij przycisk
-                button.click();
-              }
               // // Eksperyment
             } else {
               console.log(
