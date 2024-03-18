@@ -9,10 +9,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
           target: { tabId: targetTab.id },
           func: function (dataArray) {
             // Sprawdź, czy element został znaleziony
-            if (textArea) {
+            var textarea = document.getElementById("colour_data");
+            if (textarea) {
               // // Eksperyment
               // Pobierz element textarea
-              var textarea = document.getElementById("colour_data");
 
               // Ustaw nową wartość dla textarea
               textarea.value = `{"h": 158, "s": 470, "v": ${
