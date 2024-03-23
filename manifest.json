@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Header Counter",
+  "name": "Sterowanie ledami",
   "version": "1.0",
   "description": "Extension to count header elements on inactive tabs and display them on active tab.",
 

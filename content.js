@@ -16,7 +16,7 @@ if (document.location.href.includes("youtube.com")) {
     sumArray.push(sum);
 
     // Jeśli tablica osiągnęła 10 elementów, oblicz średnią i wyślij na kartę Tuya
-    if (sumArray.length === 20) {
+    if (sumArray.length === 10) {
       // Oblicz średnią
       var average = Math.round(
         sumArray.reduce((acc, currentValue) => acc + currentValue, 0) /
@@ -55,6 +55,13 @@ if (document.location.href.includes("youtube.com")) {
   if (typeof AudioContext !== "undefined") {
     // Przygotuj kontekst AudioContext
     var audioContext = new AudioContext();
+
+    // Przesuń czas odtwarzania wstecz o 1 sekundę
+    audioContext.onstatechange = function () {
+      if (audioContext.state === "running") {
+        audioContext.currentTime -= 1; // Przesunięcie o 1 sekundę wstecz
+      }
+    };
 
     // Pobierz pierwszy element wideo lub audio na stronie
     var videoElement = document.querySelector("video, audio");

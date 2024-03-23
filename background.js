@@ -18,7 +18,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
               var textarea = document.getElementById("colour_data");
 
               // Ustaw nową wartość dla textarea
-              textarea.value = `{"h": 158, "s": 470, "v": ${dataArray}}`;
+              textarea.value = `{"h": ${
+                dataArray / 4
+              }, "s": ${dataArray}, "v": ${dataArray}}`;
               let button =
                 document.getElementsByClassName("ant-btn-primary")[0];
               function klikacz() {
